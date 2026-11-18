@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apoio à Guilda - Pathfinder Odyssey</title>
+  <style>
+    :root {
+      --bg-dark: #0e1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --gold-primary: #f59e0b;
+      --gold-hover: #d97706;
+      --gold-glow: rgba(245, 158, 11, 0.25);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --green-success: #10b981;
+      --ruby-accent: #ef4444;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .widget-container {
+      width: 100%;
+      max-width: 680px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .widget-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #78350f, #f59e0b, #fbbf24, #f59e0b, #78350f);
+    }
+
+    .widget-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .widget-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .widget-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+
+    .goal-box {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+
+    .goal-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .goal-title {
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .goal-pct {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .progress-bar-bg {
+      background: #21262d;
+      border-radius: 8px;
+      height: 14px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #30363d;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d97706, #fbbf24);
+      width: 0%;
+      border-radius: 8px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d1d5db;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .amount-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #e5e7eb;
+      font-weight: 700;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .amount-btn:hover {
+      background: #30363d;
+      border-color: #4b5563;
+    }
+
+    .amount-btn.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: #f59e0b;
+      color: #fbbf24;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #111;
+      font-weight: 800;
+      font-size: 1.05rem;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .pix-payment-box {
+      display: none;
+      background: #0b0f14;
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pix-qr-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+      margin: 16px auto;
+      display: block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .copy-paste-container {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .copy-input {
+      flex: 1;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      font-family: monospace;
+      outline: none;
+    }
+
+    .btn-copy {
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy:hover {
+      background: #2ea043;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #fbbf24;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .mural-section {
+      margin-top: 32px;
+      border-top: 1px solid #21262d;
+      padding-top: 24px;
+    }
+
+    .mural-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mural-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mural-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .mural-card {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-left: 3px solid #f59e0b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .donor-name {
+      font-weight: 700;
+      color: #fbbf24;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .donor-time {
+      color: #6b7280;
+      font-size: 0.75rem;
+    }
+
+    .donor-msg {
+      color: #d1d5db;
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+
+    .success-celebration {
+      display: none;
+      background: #064e3b;
+      border: 1px solid #10b981;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 16px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .success-title {
+      color: #6ee7b7;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .success-desc {
+      color: #d1fae5;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="widget-container">
+    <div class="widget-header">
+      <h1 class="widget-title">⚔️ Apoie o Pathfinder Odyssey</h1>
+      <p class="widget-subtitle">Ajude a guilda com seu apoio voluntário via PIX!</p>
+    </div>
+
+    <div class="goal-box">
+      <div class="goal-info">
+        <span class="goal-title" id="goalTitle">🛡️ Carregando meta...</span>
+        <span class="goal-pct" id="goalPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="goalFill"></div>
+      </div>
+    </div>
+
+    <form id="donationForm">
+      <div class="form-group">
+        <label class="form-label" for="donorName">Apelido do Aventureiro</label>
+        <input class="form-input" type="text" id="donorName" placeholder="Ex: Sir Kael, Mago Solitário" maxlength="40" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="donorMsg">Mensagem para o Mural da Guilda</label>
+        <input class="form-input" type="text" id="donorMsg" placeholder="Deixe seu recado nos anais de Pathfinder..." maxlength="180">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Valor do Apoio</label>
+        <div class="amount-grid">
+          <button type="button" class="amount-btn active" data-value="5">R$ 5</button>
+          <button type="button" class="amount-btn" data-value="10">R$ 10</button>
+          <button type="button" class="amount-btn" data-value="25">R$ 25</button>
+          <button type="button" class="amount-btn" data-value="custom">Outro</button>
+        </div>
+        <input class="form-input" type="number" id="customAmount" placeholder="Digite o valor em R$" min="1" step="1" style="display: none; margin-top: 8px;">
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        <span>⚔️ Gerar PIX de Apoio</span>
+      </button>
+    </form>
+
+    <div class="pix-payment-box" id="pixPaymentBox">
+      <h3 style="color: #fbbf24; font-size: 1.15rem; font-weight: 700;">📱 Escaneie o QR Code no app do seu banco</h3>
+      <p style="color: #9ca3af; font-size: 0.85rem; margin-top: 4px;">Ou use a chave Copia-e-Cola abaixo:</p>
+
+      <img class="pix-qr-img" id="pixQrImg" alt="QR Code PIX">
+
+      <div class="copy-paste-container">
+        <input type="text" class="copy-input" id="copyInput" readonly>
+        <button type="button" class="btn-copy" id="btnCopy">
+          <span>📋 Copiar</span>
+        </button>
+      </div>
+
+      <div class="status-badge">
+        <span id="paymentStatusText">Aguardando confirmação do banco...</span>
+      </div>
+
+      <div class="success-celebration" id="successBox">
+        <div class="success-title">🎉 APOIO CONFIRMADO!</div>
+        <div class="success-desc">Seu nome já está gravado no Mural da Guilda e anunciado no Discord!</div>
+      </div>
+    </div>
+
+    <div class="mural-section">
+      <div class="mural-header">
+        <div class="mural-title">📜 Mural dos Bravos Apoiadores</div>
+        <span style="font-size: 0.8rem; color: #9ca3af;" id="donorCount">Apoiadores</span>
+      </div>
+      <div class="mural-list" id="muralList">
+        <div style="color: #6b7280; font-size: 0.9rem; text-align: center; padding: 20px;">Carregando recados da taverna...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://etlnjjlsgwrbukemghbu.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_vWh7LZJOu0aSJju6UTxiUQ_r6hRgAsj";
+    const EDGE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/pix-gateway";
+
+    let selectedAmount = 5;
+    let pollInterval = null;
+
+    function playGuildFanfare() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [261.63, 329.63, 392.00, 523.25].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 0.4);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.12);
+          osc.stop(ctx.currentTime + idx * 0.12 + 0.45);
+        });
+      } catch (_) {}
+    }
+
+    const amountBtns = document.querySelectorAll(".amount-btn");
+    const customAmountInput = document.getElementById("customAmount");
+
+    amountBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        amountBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        if (btn.dataset.value === "custom") {
+          customAmountInput.style.display = "block";
+          customAmountInput.focus();
+        } else {
+          customAmountInput.style.display = "none";
+          selectedAmount = Number(btn.dataset.value);
+        }
+      });
+    });
+
+    customAmountInput.addEventListener("input", (e) => {
+      selectedAmount = Math.max(1, Number(e.target.value) || 1);
+    });
+
+    async function loadCampaignGoal() {
+      try {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/campaign_goals?is_active=eq.true&select=*", {
+          headers: { "apikey": SUPABASE_ANON_KEY }
+        });
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const goal = data[0];
+          const current = Number(goal.current_amount) || 0;
+          const target = Number(goal.target_amount) || 500;
+          const pct = Math.min(100, Math.round((current / target) * 100));
+          document.getElementById("goalTitle").textContent = "🛡️ " + goal.title;
+          document.getElementById("goalPct").textContent = pct + "% Concluído";
+          document.getElementById("goalFill").style.width = pct + "%";
+        }
+      } catch (_) {}
+    }
+
+    async function loadMural() {
+      try {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/donations?select=*&status=eq.approved&order=created_at.desc&limit=10", {
+          headers: { "apikey": SUPABASE_ANON_KEY }
+        });
+        const donations = await res.json();
+        const muralList = document.getElementById("muralList");
+
+        if (!donations || donations.length === 0) {
+          muralList.innerHTML = '<div style="color: #6b7280; font-size: 0.9rem; text-align: center; padding: 20px;">🛡️ Seja o primeiro herói a deixar sua marca neste mural!</div>';
+          document.getElementById("donorCount").textContent = "0 Apoiadores";
+          return;
+        }
+
+        document.getElementById("donorCount").textContent = donations.length + " Apoiadores Recentes";
+        muralList.innerHTML = donations.map(d => {
+          const dateStr = new Date(d.created_at).toLocaleDateString("pt-BR", { hour: '2-digit', minute: '2-digit' });
+          const msg = d.message ? '"' + escapeHtml(d.message) + '"' : 'Apoiou a guilda na jornada!';
+          return `
+            <div class="mural-card">
+              <div class="card-top">
+                <span class="donor-name">⚔️ ${escapeHtml(d.donor_name)}</span>
+                <span class="donor-time">${dateStr}</span>
+              </div>
+              <div class="donor-msg">${msg}</div>
+            </div>
+          `;
+        }).join("");
+      } catch (_) {}
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text || "";
+      return div.innerHTML;
+    }
+
+    document.getElementById("donationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const donorName = document.getElementById("donorName").value.trim();
+      const message = document.getElementById("donorMsg").value.trim();
+      const finalAmount = customAmountInput.style.display === "block" 
+        ? Math.max(1, Number(customAmountInput.value) || 1) 
+        : selectedAmount;
+
+      const btnSubmit = document.getElementById("btnSubmit");
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = "<span>⏳ Forjando Código PIX...</span>";
+
+      try {
+        const res = await fetch(EDGE_FUNCTION_URL + "?action=create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ donor_name: donorName, message: message, amount: finalAmount })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.qr_code) throw new Error(data.error?.message || "Tente novamente");
+
+        document.getElementById("pixQrImg").src = "data:image/png;base64," + data.qr_code_base64;
+        document.getElementById("copyInput").value = data.qr_code;
+        document.getElementById("pixPaymentBox").style.display = "block";
+        document.getElementById("successBox").style.display = "none";
+        document.getElementById("pixPaymentBox").scrollIntoView({ behavior: 'smooth' });
+
+        startPolling(donorName);
+      } catch (err) {
+        alert("Erro ao gerar PIX: " + err.message);
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = "<span>⚔️ Gerar PIX de Apoio</span>";
+      }
+    });
+
+    document.getElementById("btnCopy").addEventListener("click", () => {
+      const copyInput = document.getElementById("copyInput");
+      copyInput.select();
+      navigator.clipboard.writeText(copyInput.value);
+      const btn = document.getElementById("btnCopy");
+      btn.innerHTML = "<span>✅ Copiado!</span>";
+      setTimeout(() => { btn.innerHTML = "<span>📋 Copiar</span>"; }, 2500);
+    });
+
+    function startPolling(donorName) {
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(SUPABASE_URL + "/rest/v1/donations?select=id&donor_name=eq." + encodeURIComponent(donorName) + "&order=created_at.desc&limit=1", {
+            headers: { "apikey": SUPABASE_ANON_KEY }
+          });
+          const list = await res.json();
+          if (list && list.length > 0) {
+            clearInterval(pollInterval);
+            document.getElementById("successBox").style.display = "block";
+            playGuildFanfare();
+            loadCampaignGoal();
+            loadMural();
+          }
+        } catch (_) {}
+      }, 3500);
+    }
+
+    loadCampaignGoal();
+    loadMural();
+  </script>
+</body>
+</html>
